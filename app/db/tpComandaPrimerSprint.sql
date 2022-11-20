@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2022 at 12:51 AM
+-- Generation Time: Nov 21, 2022 at 12:22 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
@@ -63,8 +63,17 @@ INSERT INTO `estado_mesa` (`id`, `nombre_estado`) VALUES
 
 CREATE TABLE `estado_pedido` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(255) NOT NULL
+  `nombre_estado` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `estado_pedido`
+--
+
+INSERT INTO `estado_pedido` (`id`, `nombre_estado`) VALUES
+(1, 'En preparación'),
+(2, 'Listo para servir'),
+(3, 'Entregado');
 
 -- --------------------------------------------------------
 
@@ -98,7 +107,20 @@ CREATE TABLE `mesa` (
 
 INSERT INTO `mesa` (`id`, `numero`, `id_estado`, `fecha_baja`) VALUES
 (1, 1, 2, '2022-11-19'),
-(2, 2, 1, NULL);
+(2, 2, 1, NULL),
+(3, 3, 1, NULL),
+(4, 4, 1, NULL),
+(5, 5, 1, NULL),
+(6, 6, 1, NULL),
+(7, 7, 1, NULL),
+(8, 8, 1, NULL),
+(9, 9, 1, NULL),
+(10, 10, 1, NULL),
+(11, 11, 1, NULL),
+(12, 12, 1, NULL),
+(13, 13, 1, NULL),
+(14, 14, 1, NULL),
+(15, 15, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -112,8 +134,19 @@ CREATE TABLE `pedido` (
   `id_estado` int(11) DEFAULT NULL,
   `codigo_pedido` varchar(50) DEFAULT NULL,
   `tiempo_finalizacion` int(11) DEFAULT NULL,
-  `total_pedido` float DEFAULT NULL
+  `total_pedido` float DEFAULT NULL,
+  `fecha_creacion` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `pedido`
+--
+
+INSERT INTO `pedido` (`id`, `nombre_cliente`, `id_estado`, `codigo_pedido`, `tiempo_finalizacion`, `total_pedido`, `fecha_creacion`) VALUES
+(1, 'Pedro', 2, '63797a5aa6e7f', 40, 800, '2022-11-19'),
+(2, 'Franco', 1, '63797bf9f3523', NULL, NULL, '2022-11-19'),
+(3, 'Tomas', 1, '63797d7a0caf5', NULL, NULL, '2022-11-19'),
+(4, 'Lucas', 1, '63797dc251c84', NULL, NULL, '2022-11-20');
 
 -- --------------------------------------------------------
 
@@ -127,15 +160,19 @@ CREATE TABLE `producto` (
   `codigo_producto` varchar(200) NOT NULL,
   `precio` float NOT NULL,
   `id_tipo` int(11) DEFAULT NULL,
-  `fecha_baja` date DEFAULT NULL
+  `fecha_baja` date DEFAULT NULL,
+  `tiempo_preparacion` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `producto`
 --
 
-INSERT INTO `producto` (`id`, `nombre`, `codigo_producto`, `precio`, `id_tipo`, `fecha_baja`) VALUES
-(1, 'Hamburguesa', 'aaaxx2123', 200, 1, '2022-11-19');
+INSERT INTO `producto` (`id`, `nombre`, `codigo_producto`, `precio`, `id_tipo`, `fecha_baja`, `tiempo_preparacion`) VALUES
+(1, 'Hamburguesa', 'aaaxx2123', 200, 1, '2022-11-19', 10),
+(2, 'Milanesa a caballo', 'aa2b35', 300, 1, NULL, 20),
+(3, 'Corona', 'xa23sx', 400, 2, NULL, 2),
+(4, 'Daikiri', 'xas231sa', 500, 2, NULL, 10);
 
 -- --------------------------------------------------------
 
@@ -148,6 +185,16 @@ CREATE TABLE `producto_pedido` (
   `id_producto` int(11) NOT NULL,
   `id_pedido` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `producto_pedido`
+--
+
+INSERT INTO `producto_pedido` (`id`, `id_producto`, `id_pedido`) VALUES
+(1, 1, 1),
+(2, 1, 1),
+(3, 1, 1),
+(4, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -312,7 +359,7 @@ ALTER TABLE `estado_mesa`
 -- AUTO_INCREMENT for table `estado_pedido`
 --
 ALTER TABLE `estado_pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `logs_empleado`
@@ -324,25 +371,25 @@ ALTER TABLE `logs_empleado`
 -- AUTO_INCREMENT for table `mesa`
 --
 ALTER TABLE `mesa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `producto_pedido`
 --
 ALTER TABLE `producto_pedido`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `rol`

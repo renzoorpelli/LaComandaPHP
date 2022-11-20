@@ -18,6 +18,8 @@ require_once './db/AccesoDatos.php';
 require_once './controllers/UsuarioController.php';
 require_once './controllers/ProductoController.php';
 require_once './controllers/MesaController.php';
+require_once './controllers/PedidoController.php';
+require_once './controllers/ProductoPedidoController.php';
 
 
 // Load ENV
@@ -62,10 +64,20 @@ $app->group('/productos', function (RouteCollectorProxy $group) {
 });
 
 
-$app->group('/pedido', function (RouteCollectorProxy $group) {
-  $group->get('[/]', \UsuarioController::class . ':TraerTodos');
-  $group->get('/{nombre}', \UsuarioController::class . ':TraerUno');
-  $group->post('[/]', \UsuarioController::class . ':CargarUno');
+$app->group('/pedidos', function (RouteCollectorProxy $group) {
+  $group->get('[/]', \PedidoController::class . ':TraerTodos');
+  $group->get('/{codigoPedido}', \PedidoController::class . ':TraerUno');
+  $group->post('[/]', \PedidoController::class . ':CargarUno');
+  $group->put('/{id}', \PedidoController::class . ':ModificarUno');
+  $group->post('/{id}', \PedidoController::class . ':CargarProductos');
+
+});
+
+
+
+$app->group('/productoPedido', function (RouteCollectorProxy $group) {
+  $group->get('/{idPedido}', \ProductoPedidoController::class . ':TraerTodos');
+
 });
 
 

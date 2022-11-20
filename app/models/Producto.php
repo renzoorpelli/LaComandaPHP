@@ -9,6 +9,7 @@ class Producto
     public $precio;
     public $id_tipo;
     public $fecha_baja;
+    public $tiempo_preparacion;
 
 
 
@@ -17,11 +18,12 @@ class Producto
         $retorno = false;
         try {
             $objAccesoDatos = AccesoDatos::obtenerInstancia();
-            $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO producto (nombre, codigo_producto, precio, id_tipo) VALUES (:nombre, :codigo_producto, :precio, :id_tipo)");
+            $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO producto (nombre, codigo_producto, precio, id_tipo , tiempo_preparacion) VALUES (:nombre, :codigo_producto, :precio, :id_tipo, :tiempo_preparacion)");
             $consulta->bindValue(':nombre', $this->nombre, PDO::PARAM_STR);
             $consulta->bindValue(':codigo_producto', $this->codigo_producto, PDO::PARAM_STR); //posible problema string
             $consulta->bindValue(':precio', $this->precio, PDO::PARAM_INT);
             $consulta->bindValue(':id_tipo', $this->id_tipo, PDO::PARAM_INT);
+            $consulta->bindValue(':tiempo_preparacion', $this->tiempo_preparacion, PDO::PARAM_INT);
             $consulta->execute();
             $retorno = $objAccesoDatos->obtenerUltimoId();
         } catch (Throwable $e) {
@@ -39,7 +41,7 @@ class Producto
         $retorno = '';
         try {
             $objAccesoDatos = AccesoDatos::obtenerInstancia();
-            $consulta = $objAccesoDatos->prepararConsulta("SELECT id, nombre, codigo_producto, precio, id_tipo FROM producto");
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT id, nombre, codigo_producto, precio, id_tipo, tiempo_preparacion FROM producto");
             $consulta->execute();
 
             $retorno = $consulta->fetchAll(PDO::FETCH_CLASS, 'Producto');
@@ -57,7 +59,7 @@ class Producto
         $retorno = '';
         try {
             $objAccesoDatos = AccesoDatos::obtenerInstancia();
-            $consulta = $objAccesoDatos->prepararConsulta("SELECT id, nombre, codigo_producto, precio, id_tipo FROM producto WHERE nombre = :nombre");
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT id, nombre, codigo_producto, precio, id_tipo, tiempo_preparacion FROM producto WHERE nombre = :nombre");
             $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
             $consulta->execute();
 
@@ -121,7 +123,7 @@ class Producto
         $retorno = false;
         try {
             $objAccesoDatos = AccesoDatos::obtenerInstancia();
-            $consulta = $objAccesoDatos->prepararConsulta("SELECT nombre, codigo_producto, precio, id_tipo FROM producto WHERE id = :id");
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT nombre, codigo_producto, precio, id_tipo, tiempo_preparacion FROM producto WHERE id = :id");
             $consulta->bindValue(':id', intval($id), PDO::PARAM_INT);
             $consulta->execute();
             $producto = $consulta->fetchObject('Producto');
@@ -138,13 +140,14 @@ class Producto
 
 
 
-    public static function modificarProducto($nombre, $codigo_producto, $precio, $id)
+    public static function modificarProducto($nombre, $codigo_producto, $precio, $tiempo_preparacion, $id)
     {
         $objAccesoDato = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDato->prepararConsulta("UPDATE producto SET nombre = :nombre, codigo_producto = :codigo_producto, precio = :precio WHERE id = :id");
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE producto SET nombre = :nombre, codigo_producto = :codigo_producto, precio = :precio, tiempo_preparacion = :tiempo_preparacion WHERE id = :id");
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $consulta->bindValue(':codigo_producto', $codigo_producto, PDO::PARAM_STR);
         $consulta->bindValue(':precio', $precio, PDO::PARAM_INT);
+        $consulta->bindValue(':tiempo_preparacion', $tiempo_preparacion, PDO::PARAM_INT);
         $consulta->bindValue(':id', $id, PDO::PARAM_INT);
         $consulta->execute();
     }
