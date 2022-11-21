@@ -163,6 +163,19 @@ class Mesa
         $consulta->execute();
     }
 
+    //metodo encargado de actualizar el estado de una mesa //cerrada, con cliente esperando pedido, con cliente pagando
+    public static function actualizarEstado($id_mesa, $id_estado)
+    {
+        $retorno = false;
+        $objAccesoDato = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE mesa SET id_estado = :id_estado WHERE id = :id");
+        $consulta->bindValue(':id_estado', $id_estado, PDO::PARAM_INT);
+        $consulta->bindValue(':id', $id_mesa, PDO::PARAM_INT);
+        $consulta->execute();
+        $retorno = true;
+        return $retorno;
+    }
+
     public static function borrarMesa($id)
     {
         $objAccesoDato = AccesoDatos::obtenerInstancia();
@@ -172,6 +185,8 @@ class Mesa
         $consulta->bindValue(':fecha_baja', date_format($fecha, 'Y-m-d H:i:s'));
         $consulta->execute();
     }
+
+    
 
 }
 ?>

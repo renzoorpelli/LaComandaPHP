@@ -14,14 +14,19 @@ class ProductoPedido
     public  function CargarUno($id_pedido, $id_producto){
         $retorno = false;
         try {
+            var_dump($id_pedido);
+            var_dump($id_producto);
             $objAccesoDatos = AccesoDatos::obtenerInstancia();
-            $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO producto_pedido (id_pedido, id_producto) VALUES (:id_producto, :id_pedido)");
+            $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO producto_pedido (id_pedido, id_producto) VALUES (:id_pedido, :id_producto)");
             $consulta->bindValue(':id_pedido', $id_pedido, PDO::PARAM_INT); 
             $consulta->bindValue(':id_producto', $id_producto, PDO::PARAM_INT);
             $consulta->execute();
             $retorno = $objAccesoDatos->obtenerUltimoId();
+           
         } catch (Throwable $e) {
 
+            $retorno = $e->getMessage();
+            var_dump($retorno);
            
         } finally {
 

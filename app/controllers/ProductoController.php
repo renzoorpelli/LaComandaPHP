@@ -85,10 +85,11 @@ class ProductoController extends Producto implements IApiUsable
         $codigo_producto = $parametros['codigo_producto'];
         $precio = $parametros['precio'];
         $tiempo_preparacion = $parametros['tiempo_preparacion'];
+        $estado_pedido = $parametros['id_estado'];
         $id = $args['id'];
 
         if (Producto::verificarProducto($id)) {
-            Producto::modificarProducto($nombre, $codigo_producto, $precio, $tiempo_preparacion ,$id);
+            Producto::modificarProducto($nombre, $codigo_producto, $precio, $tiempo_preparacion, $estado_pedido ,$id);
             $payload = json_encode(array("mensaje" => "Producto modificado con exito"));
         } else {
             $payload = json_encode(array("mensaje" => "Producto no exite"));

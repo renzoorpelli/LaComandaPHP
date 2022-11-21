@@ -66,18 +66,18 @@ class Usuario
 
     }
 
-
-    public static function verificarDatos($usuario, $clave): int
+    // metodo encargado de verificar los datos del usuario, si existe y es socio retorna 1, si no existe, retorna 3, si existe pero no es socio, retorna el rol
+    public static function verificarDatos($usuario, $clave)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, mail, clave, id_rol FROM usuario WHERE mail = :mail");
-        $consulta->bindValue(':mail', $usuario, PDO::PARAM_STR);
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, nombre, clave, id_rol FROM usuario WHERE nombre = :nombre");
+        $consulta->bindValue(':nombre', $usuario, PDO::PARAM_STR);
         $consulta->execute();
         $retorno = 0;
         $userDataBase = $consulta->fetchObject('Usuario');
 
         if ($userDataBase != null) {
-            if ($userDataBase->usuario == $usuario) {
+            if ($userDataBase->nombre == $usuario) {
                 if (password_verify($clave, $userDataBase->clave) || $userDataBase->clave == $clave) {
                     if ($userDataBase->id_rol == 1) {
                         $retorno = 1; // si es socio
@@ -104,7 +104,7 @@ class Usuario
             $consulta->execute();
             $rol = $consulta->fetchObject('Rol');
 
-            $retorno = $rol->nombre;
+            $retorno = $rol->nombre_rol;
         } catch (\Throwable $e) {
             $retorno = $e->getMessage();
         } finally {

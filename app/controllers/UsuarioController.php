@@ -128,18 +128,27 @@ class UsuarioController extends Usuario implements IApiUsable
 
     if ($usuario == 1) {
 
-      $datos = array('usuario' => $nombre, 'rol' => "socio");
+      $usarioAllData = Usuario::obtenerUsuario($nombre);
 
-      $payload = json_encode(array('OK' => $datos));
+      $datos = array('usuario' => $nombre, 'role' => "socio", 'id_usuario' => $usarioAllData->id);
+
+      $token = AutentificadorJWT::CrearToken($datos);
+      
+      $payload = json_encode(array('OK' => $token));
 
       $response->getBody()->write($payload);
 
     } else if ($usuario == 3) {
       $response->getBody()->write("El usuario no existe");
     } else {
-      $datos = array('usuario' => $nombre, 'rol' => $usuario);
 
-      $payload = json_encode(array('OK' => $datos));
+      $usarioAllData = Usuario::obtenerUsuario($nombre);
+
+      $datos = array('usuario' => $nombre, 'role' => $usuario, "id_usuario" => $usarioAllData->id);
+
+      $token = AutentificadorJWT::CrearToken($datos);
+
+      $payload = json_encode(array('OK' => $token));
 
       $response->getBody()->write($payload);
 

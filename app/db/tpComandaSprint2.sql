@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2022 at 12:22 AM
+-- Generation Time: Nov 21, 2022 at 11:55 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
@@ -33,6 +33,14 @@ CREATE TABLE `comanda` (
   `id_pedido` int(11) NOT NULL,
   `id_empleado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `comanda`
+--
+
+INSERT INTO `comanda` (`id`, `id_mesa`, `id_pedido`, `id_empleado`) VALUES
+(1, 1, 1, 8),
+(2, 2, 2, 8);
 
 -- --------------------------------------------------------
 
@@ -78,6 +86,26 @@ INSERT INTO `estado_pedido` (`id`, `nombre_estado`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `estado_producto`
+--
+
+CREATE TABLE `estado_producto` (
+  `id` int(11) NOT NULL,
+  `nombre_estado` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `estado_producto`
+--
+
+INSERT INTO `estado_producto` (`id`, `nombre_estado`) VALUES
+(1, 'en preparacion'),
+(2, 'listo para servir'),
+(3, 'recibido en cocina');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `logs_empleado`
 --
 
@@ -107,7 +135,7 @@ CREATE TABLE `mesa` (
 
 INSERT INTO `mesa` (`id`, `numero`, `id_estado`, `fecha_baja`) VALUES
 (1, 1, 2, '2022-11-19'),
-(2, 2, 1, NULL),
+(2, 2, 2, NULL),
 (3, 3, 1, NULL),
 (4, 4, 1, NULL),
 (5, 5, 1, NULL),
@@ -143,8 +171,8 @@ CREATE TABLE `pedido` (
 --
 
 INSERT INTO `pedido` (`id`, `nombre_cliente`, `id_estado`, `codigo_pedido`, `tiempo_finalizacion`, `total_pedido`, `fecha_creacion`) VALUES
-(1, 'Pedro', 2, '63797a5aa6e7f', 40, 800, '2022-11-19'),
-(2, 'Franco', 1, '63797bf9f3523', NULL, NULL, '2022-11-19'),
+(1, 'Pedro', 2, '63797a5aa6e7f', 10, 200, '2022-11-19'),
+(2, 'Franco', 2, '63797bf9f3523', 60, 200, '2022-11-19'),
 (3, 'Tomas', 1, '63797d7a0caf5', NULL, NULL, '2022-11-19'),
 (4, 'Lucas', 1, '63797dc251c84', NULL, NULL, '2022-11-20');
 
@@ -161,18 +189,19 @@ CREATE TABLE `producto` (
   `precio` float NOT NULL,
   `id_tipo` int(11) DEFAULT NULL,
   `fecha_baja` date DEFAULT NULL,
-  `tiempo_preparacion` int(11) DEFAULT NULL
+  `tiempo_preparacion` int(11) DEFAULT NULL,
+  `id_estado` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `producto`
 --
 
-INSERT INTO `producto` (`id`, `nombre`, `codigo_producto`, `precio`, `id_tipo`, `fecha_baja`, `tiempo_preparacion`) VALUES
-(1, 'Hamburguesa', 'aaaxx2123', 200, 1, '2022-11-19', 10),
-(2, 'Milanesa a caballo', 'aa2b35', 300, 1, NULL, 20),
-(3, 'Corona', 'xa23sx', 400, 2, NULL, 2),
-(4, 'Daikiri', 'xas231sa', 500, 2, NULL, 10);
+INSERT INTO `producto` (`id`, `nombre`, `codigo_producto`, `precio`, `id_tipo`, `fecha_baja`, `tiempo_preparacion`, `id_estado`) VALUES
+(1, 'Hamburguesa Garbanzo', 'aaaxx2124', 200, 1, NULL, 10, 1),
+(2, 'Hamburguesa Garbanzo', 'aaaxx2124', 200, 1, NULL, 20, 2),
+(3, 'Daikiri', 'aaaxx2124', 500, 3, NULL, 20, 2),
+(4, 'Corona', 'aaaxx2121', 300, 2, NULL, 20, 2);
 
 -- --------------------------------------------------------
 
@@ -192,9 +221,9 @@ CREATE TABLE `producto_pedido` (
 
 INSERT INTO `producto_pedido` (`id`, `id_producto`, `id_pedido`) VALUES
 (1, 1, 1),
-(2, 1, 1),
-(3, 1, 1),
-(4, 1, 1);
+(2, 2, 2),
+(3, 2, 2),
+(4, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -235,7 +264,8 @@ CREATE TABLE `tipo_producto` (
 
 INSERT INTO `tipo_producto` (`id`, `nombre_tipo`) VALUES
 (1, 'comida'),
-(2, 'bebida');
+(2, 'cerveza'),
+(3, 'trago');
 
 -- --------------------------------------------------------
 
@@ -257,7 +287,10 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`id`, `nombre`, `clave`, `id_rol`, `fecha_baja`) VALUES
 (4, 'lito', '$2y$10$TU3Qr18EUZbDNqTl6ClzRupOH5s4UHDU3wejpAMuCkfnj2Ue0d0Ni', 1, NULL),
-(5, 'juancito', '$2y$10$sZ5XzpxLpuWJUlxBLZVRaeesZ63snfFOOYEJKt6SSVSlemxwz7vD.', 2, '2022-11-19');
+(5, 'juancito', '$2y$10$sZ5XzpxLpuWJUlxBLZVRaeesZ63snfFOOYEJKt6SSVSlemxwz7vD.', 2, '2022-11-19'),
+(6, 'pablo', 'abc4565', 3, NULL),
+(7, 'thomas', 'abc4565', 4, NULL),
+(8, 'ignacio', 'abc4565', 5, NULL);
 
 --
 -- Indexes for dumped tables
@@ -282,6 +315,12 @@ ALTER TABLE `estado_mesa`
 -- Indexes for table `estado_pedido`
 --
 ALTER TABLE `estado_pedido`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `estado_producto`
+--
+ALTER TABLE `estado_producto`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -310,7 +349,8 @@ ALTER TABLE `pedido`
 --
 ALTER TABLE `producto`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `tipoProducto_ibfk_1` (`id_tipo`);
+  ADD KEY `tipoProducto_ibfk_1` (`id_tipo`),
+  ADD KEY `productofk` (`id_estado`);
 
 --
 -- Indexes for table `producto_pedido`
@@ -347,7 +387,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT for table `comanda`
 --
 ALTER TABLE `comanda`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `estado_mesa`
@@ -359,6 +399,12 @@ ALTER TABLE `estado_mesa`
 -- AUTO_INCREMENT for table `estado_pedido`
 --
 ALTER TABLE `estado_pedido`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `estado_producto`
+--
+ALTER TABLE `estado_producto`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
@@ -401,13 +447,13 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT for table `tipo_producto`
 --
 ALTER TABLE `tipo_producto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
@@ -443,6 +489,7 @@ ALTER TABLE `pedido`
 -- Constraints for table `producto`
 --
 ALTER TABLE `producto`
+  ADD CONSTRAINT `productofk` FOREIGN KEY (`id_estado`) REFERENCES `estado_producto` (`id`),
   ADD CONSTRAINT `tipoProducto_ibfk_1` FOREIGN KEY (`id_tipo`) REFERENCES `tipo_producto` (`id`);
 
 --

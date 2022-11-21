@@ -56,7 +56,7 @@ class Pedido
 
     public static function obtenerPedido($codigo_pedido)
     {
-        $retorno = '';
+        $retorno = false;
         try {
             $objAccesoDatos = AccesoDatos::obtenerInstancia();
             $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigo_pedido, id_estado, fecha_creacion FROM pedido WHERE codigo_pedido = :codigo_pedido");
@@ -66,7 +66,7 @@ class Pedido
             $retorno = $consulta->fetchObject('Pedido');
             
         } catch (\Throwable $th) {
-            $retorno = $th->getMessage();
+            return false;
         } finally {
             return $retorno;
         }
@@ -159,11 +159,21 @@ class Pedido
 
         $producto_pedido = new ProductoPedido();
         $retorno = false;
+        $producto = new Producto();
         foreach($productos as $item){
 
-            if(Producto::verificarProducto($item['id']) && Pedido::verificarPedido($id_pedido)){
-                
-                if($producto_pedido->CargarUno($id_pedido, $item['id']) != false){
+            $producto->nombre = $item['nombre'];
+            $producto->codigo_producto = $item['codigo_producto'];
+            $producto->precio = $item['precio'];
+            $producto->id_tipo = $item['id_tipo'];
+            $producto->id_estado = 3;
+
+
+            if(Pedido::verificarPedido($id_pedido)){
+
+                //creo producto y obtengo ultimo id
+                $id_producto = $producto->crearProducto();
+                if($producto_pedido->CargarUno($id_pedido,$id_producto) != false){
                     $retorno = true;
                 }
 
@@ -173,9 +183,9 @@ class Pedido
         }
 
         //si carga los productos, puedo actualizar las horas
-        if($retorno == false){
+        if($retorno == true){
             self::setearPrecioFinalPedido($id_pedido);
-            self::setearTiempoPreparacionPedido($id_pedido);
+            //self::setearTiempoPreparacionPedido($id_pedido);
 
         }
 
@@ -200,12 +210,27 @@ class Pedido
     {
         $productos = ProductoPedido::obtenerTodos($id_pedido);
         $tiempoFinal = 0;
-        foreach ($productos as $item) {
-            $tiempoFinal += $item->tiempo_preparacion;
+        if(count($productos) > 0 || $productos != false){
+            foreach ($productos as $item) {
+                $tiempoFinal += $item->tiempo_preparacion;
+            }
         }
-        
         Pedido::modificarTiempoPedido($id_pedido, $tiempoFinal);
 
+        return $tiempoFinal;
+    }
+
+    //metodo encargado de actualizar el estado de un pedido
+    public static function actualizarEstado($id_estado, $id_pedido)
+    {
+        $retorno = false;
+        $objAccesoDato = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE pedido SET id_estado = :id_estado WHERE id = :id");
+        $consulta->bindValue(':id_estado', $id_estado, PDO::PARAM_INT);
+        $consulta->bindValue(':id', $id_pedido, PDO::PARAM_INT);
+        $consulta->execute();
+        $retorno = true;
+        return $retorno;
     }
 
 

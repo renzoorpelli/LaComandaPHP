@@ -24,9 +24,6 @@ class MesaController extends Mesa implements IApiUsable
             $payload = json_encode(array("mensaje" => "Error la mesa ya existe"));
         }
 
-
-
-
         $response->getBody()->write($payload);
         return $response
             ->withHeader(
