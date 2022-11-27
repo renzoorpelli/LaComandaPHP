@@ -74,6 +74,26 @@ class Pedido
     }
 
 
+    public static function obtenerPedidoId($id_pedido)
+    {
+        $retorno = false;
+        try {
+            $objAccesoDatos = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT id, codigo_pedido, id_estado, fecha_creacion, total_pedido FROM pedido WHERE id = :id_pedido");
+            $consulta->bindValue(':id_pedido', $id_pedido, PDO::PARAM_STR);
+            $consulta->execute();
+            
+            $retorno = $consulta->fetchObject('Pedido');
+            
+        } catch (\Throwable $th) {
+            return false;
+        } finally {
+            return $retorno;
+        }
+
+    }
+
+
     /*
     metodo encargado de verificar si existe estado de mesa
     */
@@ -151,6 +171,16 @@ class Pedido
         $consulta->execute();
     }
 
+    //funcion encargada de modificar el estado de un pedido
+    public static function modificarEstadoPedido($id_pedido, $id_estado)
+    {
+        $objAccesoDato = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE pedido SET id_estado = :id_estado WHERE id = :id_pedido");
+        $consulta->bindValue(':id_estado', $id_estado, PDO::PARAM_INT);
+        $consulta->bindValue(':id_pedido', $id_pedido, PDO::PARAM_INT);
+        $consulta->execute();
+    }
+
 
 
 
@@ -203,7 +233,7 @@ class Pedido
         }
         Pedido::modificarMontoPedido($id_pedido, $precioFinal);
 
-
+        return $precioFinal;
     }
 
     public static function setearTiempoPreparacionPedido($id_pedido)

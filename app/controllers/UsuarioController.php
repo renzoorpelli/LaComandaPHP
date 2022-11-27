@@ -133,7 +133,7 @@ class UsuarioController extends Usuario implements IApiUsable
       $datos = array('usuario' => $nombre, 'role' => "socio", 'id_usuario' => $usarioAllData->id);
 
       $token = AutentificadorJWT::CrearToken($datos);
-      
+
       $payload = json_encode(array('OK' => $token));
 
       $response->getBody()->write($payload);
@@ -162,4 +162,42 @@ class UsuarioController extends Usuario implements IApiUsable
       );
   }
 
+
+
+  public function ObtenerTodosCSV($request, $response, $args)
+  {
+    $lista = Usuario::obtenerTodos();
+    $payload = json_encode($lista);
+
+
+    header('Content-Type: application/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename=usuarios.csv');
+    ob_end_clean();
+
+    //creo el csv con los datos
+    if(!file_exists('./usuarios.csv')){
+      $data = json_decode($payload, true);
+      $fp = fopen("usuarios.csv", 'w');
+      foreach ($data as $row) {
+        fputcsv($fp, $row);
+      }
+      fclose($fp);
+    }
+    readfile('./usuarios.csv');
+    //ob_flush();
+
+    return $response
+      ->withHeader(
+        'Content-Type',
+        'application/csv'
+      );
+  }
+
+
+  public function CargarDatosDesdeCSV($request, $response, $args){
+
+
+
+    
+  }
 }

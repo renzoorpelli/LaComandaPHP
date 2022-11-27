@@ -70,11 +70,12 @@ $app->addBodyParsingMiddleware();
 
 //solo los socios pueden acceder a las acciones de los usuario
 $app->group('/usuarios', function (RouteCollectorProxy $group) {
-    $group->get('[/]', \UsuarioController::class . ':TraerTodos');
-    $group->get('/{usuario}', \UsuarioController::class . ':TraerUno');
-    $group->post('[/]', \UsuarioController::class . ':CargarUno');
-    $group->put('/{id}', \UsuarioController::class . ':ModificarUno');
-    $group->delete('/{id}', \UsuarioController::class . ':BorrarUno');
+  $group->get('[/]', \UsuarioController::class . ':TraerTodos');
+  //$group->get('/{usuario}', \UsuarioController::class . ':TraerUno');
+  $group->post('[/]', \UsuarioController::class . ':CargarUno');
+  $group->put('/{id}', \UsuarioController::class . ':ModificarUno');
+  $group->delete('/{id}', \UsuarioController::class . ':BorrarUno');
+  $group->get('/obtenerLista', \UsuarioController::class . ':ObtenerTodosCSV');
 })->add(new socioCheckMiddleware())->add(new jwtCheckerMiddleware());
 
 
@@ -123,9 +124,10 @@ $app->group('/productoPedido', function (RouteCollectorProxy $group) {
 
 $app->group('/mozos', function (RouteCollectorProxy $group) {
   $group->get('/{idPedido}', \ProductoPedidoController::class . ':TraerTodos');//pedidos de mozos
-  $group->post('[/]', \ComandaController::class . ':AsociarPedido');//asocia la mesa con el pedido
-  $group->post('/verificarPedidos', \MozoController::class . ':ChequearPedidos');
-
+  $group->post('[/]', \ComandaController::class . ':AsociarPedido');//asocia la mesa con el pedido. Punto 2
+  $group->post('/verificarPedido', \MozoController::class . ':VerificarPedido'); // verifica si el pedido esta listo para servir PUNTO 7
+  $group->post('/cambiarEstadoMesa', \MozoController::class . ':CambiarEstadoMesa'); // cambia el estado de la mesa PUNTO 7
+  $group->get('/mostarCuenta/{idMesa}', \MozoController::class . ':CobrarMesa'); // mostar Total Cuenta Mesa. Punto 9
 })->add(new mozoCheckMiddleware())->add(new jwtCheckerMiddleware());
 
 
@@ -160,7 +162,8 @@ $app->group('/cerveceros', function (RouteCollectorProxy $group) {
 
 
 $app->group('/socios', function (RouteCollectorProxy $group) {
-  $group->get('[/]', \ProductoPedidoController::class . ':TraerTodos');//pueden ver todo
+  $group->get('[/]', \ProductoPedidoController::class . ':TraerTodos');//pueden ver todo. Punto 5
+  $group->put('/{idMesa}', \MesaController::class . ':CerrarMesa');
 
 })->add(new socioCheckMiddleware())->add(new jwtCheckerMiddleware());
 
@@ -169,7 +172,7 @@ $app->group('/socios', function (RouteCollectorProxy $group) {
 
 
 $app->group('/clientes', function (RouteCollectorProxy $group) {
-  $group->get('[/]', \ClienteController::class . ':TraerTiempoPedido');//cliente puede ver su pedido
+  $group->get('[/]', \ClienteController::class . ':TraerTiempoPedido');//cliente puede ver su pedido. Punto 4
 
 });
 

@@ -48,6 +48,7 @@ class ProductoPedido
                 pp.id_pedido,
                 pp.id_producto,
                 prod.precio,
+                prod.id_estado,
                 prod.tiempo_preparacion
                 FROM producto_pedido pp
                 INNER JOIN producto prod

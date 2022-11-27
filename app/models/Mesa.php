@@ -1,6 +1,8 @@
 <?php
 
 require_once "./models/EstadoMesa.php";
+require_once "./models/DTO/MesaDTO.php";
+
 class Mesa
 {
     public $id;
@@ -33,10 +35,14 @@ class Mesa
         $retorno = '';
         try {
             $objAccesoDatos = AccesoDatos::obtenerInstancia();
-            $consulta = $objAccesoDatos->prepararConsulta("SELECT id, numero, id_estado FROM mesa");
+            $consulta = $objAccesoDatos->prepararConsulta(
+                "SELECT m.id, m.numero, em.nombre_estado 
+                FROM mesa m
+                INNER JOIN estado_mesa em
+                on m.id_estado = em.id");
             $consulta->execute();
 
-            $retorno = $consulta->fetchAll(PDO::FETCH_CLASS, 'Mesa');
+            $retorno = $consulta->fetchAll(PDO::FETCH_CLASS, 'MesaDTO');
         } catch (\Throwable $th) {
             $retorno = $th->getMessage();
         } finally {
@@ -58,6 +64,24 @@ class Mesa
             $retorno = $consulta->fetchObject('Mesa');
         } catch (\Throwable $th) {
             $retorno = $th->getMessage();
+        } finally {
+            return $retorno;
+        }
+
+    }
+
+    public static function obtenerMesaId($id_mesa)
+    {
+        $retorno = false;
+        try {
+            $objAccesoDatos = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT id, numero, id_estado FROM mesa WHERE id = :id");
+            $consulta->bindValue(':id', $id_mesa, PDO::PARAM_STR);
+            $consulta->execute();
+
+            $retorno = $consulta->fetchObject('Mesa');
+        } catch (\Throwable $th) {
+            $retorno = false;
         } finally {
             return $retorno;
         }

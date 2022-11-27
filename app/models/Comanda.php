@@ -56,6 +56,56 @@ class Comanda
             return $retorno;
         }
     }
+
+    //metodo encargado de retornar la comanda segun el numero de pedido
+    public static function obtenerMesaPedido($id_pedido){
+        $retorno = '';
+        try {
+            $objAccesoDatos = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDatos->prepararConsulta(
+            "SELECT * 
+            FROM comanda 
+            WHERE id_pedido = :id_pedido");
+
+            $consulta->bindValue(':id_pedido', $id_pedido, PDO::PARAM_INT);
+            $consulta->execute();
+            
+            $retorno = $consulta->fetchObject('Comanda');
+            if($retorno != false){
+                return true;
+            }
+            
+        } catch (\Throwable $th) {
+            $retorno = false;
+        } finally {
+            return $retorno;
+        }
+    }
+
+    //metodo encargado de retornar la comanda segun el numero de mesa
+    public static function obtenerPedidoMesa($id_mesa){
+        $retorno = '';
+        try {
+            $objAccesoDatos = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDatos->prepararConsulta(
+            "SELECT * 
+            FROM comanda 
+            WHERE id_mesa = :id_mesa");
+
+            $consulta->bindValue(':id_mesa', $id_mesa, PDO::PARAM_INT);
+            $consulta->execute();
+            
+            $retorno = $consulta->fetchObject('Comanda');
+            if($retorno != false){
+                return true;
+            }
+            
+        } catch (\Throwable $th) {
+            $retorno = false;
+        } finally {
+            return $retorno;
+        }
+    }
 }
 
 ?>

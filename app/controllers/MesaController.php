@@ -116,4 +116,41 @@ class MesaController extends Mesa implements IApiUsable
             );
     }
 
+    public function CerrarMesa($request, $response, $args)
+    {
+        $payload = "Error ingrese una mesa valida";
+
+        if (isset($args['idMesa'])) {
+            $idMesa = $args['idMesa'];
+            if (Mesa::verificarMesa($idMesa)) {
+                $comandaModificar = Comanda::obtenerPedidoMesa($idMesa);
+                if ($comandaModificar != false) {
+                    $pedido = Pedido::obtenerPedidoId($comandaModificar->id_pedido);
+                    $mesa = Mesa::obtenerMesaId($idMesa);
+                    if ($pedido != false && $mesa != false) {
+                        if ($pedido->id_estado == 3 && $mesa->id_estado == 4) {
+                            Mesa::actualizarEstado($idMesa, 1); // 1 = Mesa Cerrada
+                            $payload = json_encode(array("INFORMACION" => "La Mesa ID: " . $idMesa . " que tuvo el Pedido ID: " . $pedido->id . " Fue cerrada Correctamente"));
+                        } else {
+                            $payload = json_encode(array("INFORMACION" => "El pedido ID: " . $pedido->id . " aun no fue entregado"));
+                        }
+                    }
+                }else{
+                    $payload = json_encode(array("INFORMACION" => "La Mesa ID: " . $idMesa . " aun no esta asociada a ningun pedido"));
+                }
+            }
+
+        } else {
+            $payload = "El pedido no existe";
+        }
+
+
+        $response->getBody()->write($payload);
+        return $response
+            ->withHeader(
+                'Content-Type',
+                'application/json'
+            );
+    }
+
 }

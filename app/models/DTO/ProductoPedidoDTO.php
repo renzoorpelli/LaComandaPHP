@@ -9,4 +9,5 @@ class ProductoPedidoDTO
     public $id_producto;
     public $tiempo_preparacion;
     public $precio;
+    public $id_estado;
 }
