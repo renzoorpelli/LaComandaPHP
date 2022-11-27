@@ -75,7 +75,8 @@ $app->group('/usuarios', function (RouteCollectorProxy $group) {
   $group->post('[/]', \UsuarioController::class . ':CargarUno');
   $group->put('/{id}', \UsuarioController::class . ':ModificarUno');
   $group->delete('/{id}', \UsuarioController::class . ':BorrarUno');
-  $group->get('/obtenerLista', \UsuarioController::class . ':ObtenerTodosCSV');
+  $group->get('/obtenerLista', \UsuarioController::class . ':ObtenerTodosCSV');//sprint 3
+  $group->post('/CargarDatosDesdeCSV', \UsuarioController::class . ':CargarDatosDesdeCSV');//sprint 3
 })->add(new socioCheckMiddleware())->add(new jwtCheckerMiddleware());
 
 

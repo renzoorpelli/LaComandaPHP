@@ -153,7 +153,8 @@ class Usuario
                 $retorno = true;
             }
         } catch (\Throwable $e) {
-            $retorno = $e->getMessage();
+            $retorno = false;
+            var_dump("gola");
         } finally {
             return $retorno;
         }

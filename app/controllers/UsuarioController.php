@@ -1,5 +1,7 @@
 <?php
+use Illuminate\Support\Facades\File;
 require_once './models/Usuario.php';
+require_once './models/FileManager.php';
 require_once './interfaces/IApiUsable.php';
 
 class UsuarioController extends Usuario implements IApiUsable
@@ -196,8 +198,31 @@ class UsuarioController extends Usuario implements IApiUsable
 
   public function CargarDatosDesdeCSV($request, $response, $args){
 
+    $fileManager = new FileManager("./datacsv/");
+    $payload = "El archivo no existe";
+
+    $parametros = $request->getUploadedFiles();
+    $archivo = $parametros['csv'];
+    if(isset($archivo)){
+      $nombreArchivo = $archivo->getClientFilename();
+
+      if(explode('.', $nombreArchivo)[1] == 'csv') //si no es csv no entro
+      {
+          $rutaArchivo = $fileManager->MoverArchivoCSV($nombreArchivo);
+
+          $payload = json_encode(array('OK' => FileManager::LeerUsuariosCSV($rutaArchivo)));
+      }else{
+        $payload = json_encode(array('EROR' => "extension archivo invalida"));
+      }
+      
+    }
+  
+      $response->getBody()->write($payload);
 
 
-    
+    return $response->withHeader(
+      'Content-Type',
+      'application/json'
+    );
   }
 }
