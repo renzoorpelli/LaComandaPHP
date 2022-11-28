@@ -183,4 +183,23 @@ class Usuario
         $consulta->bindValue(':fecha_baja', date_format($fecha, 'Y-m-d H:i:s'));
         $consulta->execute();
     }
+
+    public static function generarLogs($accion, $usuarioNombre, $rolUsuario){
+        $retorno = false;
+        try {
+            $objAccesoDatos = AccesoDatos::obtenerInstancia();
+            $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO logs_empleado (nombre_empleado, fecha_logue, accion) VALUES (:nombre, :fecha_logue, :accion)");
+            $consulta->bindValue(':nombre', $usuarioNombre, PDO::PARAM_STR);
+            $fecha = new DateTime(date("d-m-Y"));
+            $consulta->bindValue(':fecha_logue', date_format($fecha, 'Y-m-d H:i:s'));
+            $consulta->bindValue(':accion', $accion, PDO::PARAM_INT);
+            $consulta->execute();
+            $retorno = $objAccesoDatos->obtenerUltimoId();
+        } catch (Throwable $e) {
+            $retorno = false;
+        } finally {
+
+            return $retorno;
+        }
+    }
 }

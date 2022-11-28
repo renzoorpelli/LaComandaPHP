@@ -138,6 +138,8 @@ class UsuarioController extends Usuario implements IApiUsable
 
       $payload = json_encode(array('OK' => $token));
 
+      Usuario::generarLogs("Inicio Sesion", $nombre, 1);
+
       $response->getBody()->write($payload);
 
     } else if ($usuario == 3) {
@@ -151,6 +153,8 @@ class UsuarioController extends Usuario implements IApiUsable
       $token = AutentificadorJWT::CrearToken($datos);
 
       $payload = json_encode(array('OK' => $token));
+
+      Usuario::generarLogs("Inicio Sesion", $nombre, $usuario);
 
       $response->getBody()->write($payload);
 
@@ -177,7 +181,7 @@ class UsuarioController extends Usuario implements IApiUsable
     ob_end_clean();
 
     //creo el csv con los datos
-    if(!file_exists('./usuarios.csv')){
+    if(file_exists('./usuarios.csv')){
       $data = json_decode($payload, true);
       $fp = fopen("usuarios.csv", 'w');
       foreach ($data as $row) {
